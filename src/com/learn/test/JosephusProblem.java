@@ -39,7 +39,7 @@ public class JosephusProblem {
   public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
     peopleNum = scan.nextInt();//1--N
-    eliminatedStep = scan.nextInt();//0--(N-1)
+    eliminatedStep = scan.nextInt();//1 -- (N - 1)
     
     paramCheck();
     
@@ -52,8 +52,8 @@ public class JosephusProblem {
       throw new IllegalArgumentException("People number should bigger than 1");
     }
     
-    if(eliminatedStep > peopleNum - 1 || eliminatedStep < 0){
-      throw new IllegalArgumentException("eliminatedStep should be 0--(N-1)");
+    if(eliminatedStep > peopleNum || eliminatedStep < 0){
+      throw new IllegalArgumentException("eliminatedStep should be 1 -- (N-1)");
     }
   }
 
@@ -63,21 +63,23 @@ public class JosephusProblem {
   }
 
   private static void eliminate() {
-    if(q.size() == 1){
+    if(q.isEmpty()){
       return;
     }
 
     if(currentRemoveIdx == -1){
-      currentRemoveIdx = eliminatedStep;
+      currentRemoveIdx = eliminatedStep - 1;
     }
     int a = currentRemoveIdx - q.size();
-    if(a >= 1){
+    if(a == 0){
+      currentRemoveIdx = 0;
+    }else if(a > 0){
       //int b = currentRemoveIdx % q.size();
-      currentRemoveIdx = eliminatedStep - a;
+      currentRemoveIdx = eliminatedStep - a - 1;
     }
     Integer people = q.remove(currentRemoveIdx);
     System.out.print(people+" ");
-    currentRemoveIdx += (eliminatedStep+1);
+    currentRemoveIdx += (eliminatedStep - 1);
     eliminate();
   }
 
