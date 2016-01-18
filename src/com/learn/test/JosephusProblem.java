@@ -12,10 +12,7 @@
  ************************************************************************/
 package com.learn.test;
 
-import java.util.Deque;
-import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.Queue;
 import java.util.Scanner;
 
 /**
@@ -31,18 +28,17 @@ import java.util.Scanner;
 public class JosephusProblem {
 
   private static int peopleNum;
-  private static int eliminatedStep;
-  private static int currentRemoveIdx = -1;
+  private static int step;
 
   private static LinkedList<Integer> q = new LinkedList<Integer>();
   
   public static void main(String[] args) {
     Scanner scan = new Scanner(System.in);
     peopleNum = scan.nextInt();//1--N
-    eliminatedStep = scan.nextInt();//1 -- (N - 1)
+    step = scan.nextInt();// > 1
     
     paramCheck();
-    
+    initQueue();    
     solution();
     scan.close();
   }
@@ -52,35 +48,37 @@ public class JosephusProblem {
       throw new IllegalArgumentException("People number should bigger than 1");
     }
     
-    if(eliminatedStep > peopleNum || eliminatedStep < 0){
-      throw new IllegalArgumentException("eliminatedStep should be 1 -- (N-1)");
+    if(step < 0){
+      throw new IllegalArgumentException("eliminatedStep should be greater than 1");
     }
   }
 
   private static void solution() {
-    initQueue();
-    eliminate();
+    eliminate(q, -1, step);
   }
 
-  private static void eliminate() {
-    if(q.isEmpty()){
+  private static void eliminate(LinkedList<Integer> list, int currentRemoveIdx, int step) {
+    if(list.isEmpty()){
       return;
     }
 
+    int left = step % list.size();
     if(currentRemoveIdx == -1){
-      currentRemoveIdx = eliminatedStep - 1;
+      currentRemoveIdx = left -1;
+    }else{
+      currentRemoveIdx += step;
+      currentRemoveIdx --;
     }
-    int a = currentRemoveIdx - q.size();
-    if(a == 0){
-      currentRemoveIdx = 0;
-    }else if(a > 0){
-      //int b = currentRemoveIdx % q.size();
-      currentRemoveIdx = eliminatedStep - a - 1;
-    }
-    Integer people = q.remove(currentRemoveIdx);
-    System.out.print(people+" ");
-    currentRemoveIdx += (eliminatedStep - 1);
-    eliminate();
+    currentRemoveIdx = currentRemoveIdx % list.size();
+  
+    handle(list.get(currentRemoveIdx));
+    list.remove(currentRemoveIdx);
+
+    eliminate(list, currentRemoveIdx, step);
+  }
+
+  private static void handle(Integer integer) {
+    System.out.print(integer+" ");
   }
 
   private static void initQueue() {
